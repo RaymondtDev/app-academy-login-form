@@ -7,67 +7,69 @@ const userData = JSON.parse(localStorage.getItem("user-data")) || {
   password,
 };
 
-const getData = () => {
-  const dataContainer = document.createElement("div");
+if (regForm) {
+  regForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  dataContainer.innerHTML = `
-          <p>${userData.username}</p>
-          <p>${userData.password}</p>
-        `;
+    const username = regForm.elements["username"];
+    const password = regForm.elements["password"];
+    const errorText = document.createElement("p");
+    errorText.className = "error-text";
 
-  container.append(dataContainer);
-};
+    if (!username.value || !password.value) {
+      errorText.innerText = "username/password required";
+      errorContainer.appendChild(errorText);
+      setTimeout(() => {
+        errorText.remove();
+      }, 3000);
+      return;
+    }
 
-getData();
+    userData.username = username.value.trim();
+    userData.password = password.value.trim();
 
-regForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+    localStorage.setItem("user-data", JSON.stringify(userData));
 
-  const username = regForm.elements["username"];
-  const password = regForm.elements["password"];
+    alert("User created successfully.");
+    regForm.reset();
+  });
+}
 
-  userData.username = username.value.trim();
-  userData.password = password.value.trim();
+if (logForm) {
+  logForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  localStorage.setItem("user-data", JSON.stringify(userData));
+    const username = logForm.elements["username"];
+    const password = logForm.elements["password"];
+    const errorText = document.createElement("p");
+    errorText.className = "error-text";
 
-  getData();
-  alert("User created successfully.");
-  regForm.reset();
-});
+    if (!username.value || !password.value) {
+      errorText.innerText = "username/password required";
+      errorContainer.appendChild(errorText);
+      setTimeout(() => {
+        errorText.remove();
+      }, 3000);
+      return;
+    }
 
-logForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+    if (
+      username.value.trim() === userData.username &&
+      password.value.trim() === userData.password
+    ) {
+      errorText.innerText = "Successfully loggen in";
+      errorContainer.appendChild(errorText);
+      setTimeout(() => {
+        errorText.remove();
+      }, 3000);
+    } else {
+      errorText.innerText = "Invalid username/password.";
+      errorContainer.appendChild(errorText);
+      setTimeout(() => {
+        errorText.remove();
+      }, 3000);
+    }
 
-  const username = logForm.elements["username"];
-  const password = logForm.elements["password"];
-  const errorText = document.createElement("p");
-
-  if (!username.value || !password.value) {
-    errorText.innerText = "username/password required";
-    errorContainer.appendChild(errorText);
-    setTimeout(() => {
-      errorText.remove();
-    }, 3000);
-    return;
-  }
-
-  if (
-    username.value.trim() === userData.username &&
-    password.value.trim() === userData.password
-  ) {
-    errorText.innerText = "Successfully loggen in";
-    errorContainer.appendChild(errorText);
-    setTimeout(() => {
-      errorText.remove();
-    }, 3000);
-  } else {
-    errorText.innerText = "Invalid username/password.";
-    errorContainer.appendChild(errorText);
-    setTimeout(() => {
-      errorText.remove();
-    }, 3000);
-  }
-
-  form.reset();
-});
+    logForm.reset();
+  });
+}
